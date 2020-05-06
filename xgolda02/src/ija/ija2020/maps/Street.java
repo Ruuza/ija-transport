@@ -13,21 +13,12 @@ public class Street {
 
     private List<Stop> Stops;
 
-    public Street(String Id, Coordinate startOfStreet, Coordinate endOfStreet) {
+    public Street(String Id, Coordinate... points) {
         this.Id = Id;
         this.Stops = new ArrayList<>();
-        coordinates.add(startOfStreet);
-        coordinates.add(endOfStreet);
-    }
-
-    public Street(String Id, Coordinate startOfStreet, Coordinate endOfStreet, Coordinate... curves) {
-        this.Id = Id;
-        this.Stops = new ArrayList<>();
-        coordinates.add(startOfStreet);
-        for (Coordinate coordinate : curves) {
+        for (Coordinate coordinate : points) {
             coordinates.add(coordinate);
         }
-        coordinates.add(endOfStreet);
     }
 
     public boolean addStop(Stop stop) {
