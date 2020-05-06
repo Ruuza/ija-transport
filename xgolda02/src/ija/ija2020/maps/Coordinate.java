@@ -18,7 +18,7 @@ public class Coordinate {
      * @param X X value of coordinate
      * @param Y Y value of coordinate
      */
-    private Coordinate(int X, int Y) {
+    public Coordinate(int X, int Y) {
         this.X = X;
         this.Y = Y;
     }
