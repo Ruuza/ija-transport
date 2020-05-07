@@ -5,11 +5,12 @@ import java.util.Objects;
 /**
  * Represents coordinate of 2D space
  * 
- * @author Petr Růžanský
+ * @author Petr Ruzansky
  */
 public class Coordinate {
-
+    // X coordinate
     private int X;
+    // Y coordinate
     private int Y;
 
     /**
