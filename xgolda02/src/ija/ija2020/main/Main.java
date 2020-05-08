@@ -8,6 +8,7 @@ package ija.ija2020.main;
 import ija.ija2020.guiMaps.GuiStreet;
 import ija.ija2020.maps.Coordinate;
 import ija.ija2020.maps.Stop;
+import ija.ija2020.maps.Vehicle;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -43,6 +44,11 @@ public class Main extends Application {
 
         Controller controller = loader.getController();
         controller.setMapObjects(mapObjects);
+
+        List<Vehicle> vehicles = new ArrayList<Vehicle>();
+        vehicles.add(new Vehicle());
+        controller.setVehicles(vehicles);
+        controller.go();
     }
     public static void main(String args[]){
         launch(args);
