@@ -5,5 +5,5 @@ import javafx.scene.shape.Shape;
 import java.util.List;
 
 public interface MapObject {
-    List<Shape> getEl();
+    List<Shape> getEl(float scale);
 }
