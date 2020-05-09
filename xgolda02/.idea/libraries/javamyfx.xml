@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="javamyfx">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/build/jar/javamyfx.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
