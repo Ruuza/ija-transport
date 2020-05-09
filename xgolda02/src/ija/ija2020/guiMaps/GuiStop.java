@@ -15,16 +15,17 @@ public class GuiStop extends Stop implements MapObject {
         super(Id, coordinate);
     }
 
-    public GuiStop(Stop s){
+    public GuiStop(Stop s) {
         super(s.getId(), s.getCoordinate());
 
     }
+
     @Override
     public List<Shape> getEl(float scale) {
         Coordinate c = this.getCoordinate();
         List<Shape> shapeList = new ArrayList<Shape>();
-        shapeList.add(new Rectangle((c.getX()-5)*scale, (c.getY()-5)*scale, 10*scale, 10*scale));
-        shapeList.add(new Text((c.getX()+10)*scale, c.getY()*scale, this.getId()));
+        shapeList.add(new Rectangle((c.getX() - 5) * scale, (c.getY() - 5) * scale, 10 * scale, 10 * scale));
+        shapeList.add(new Text((c.getX() + 10) * scale, c.getY() * scale, this.getId()));
         return shapeList;
     }
 }
