@@ -22,12 +22,25 @@ public class Street {
     // Stops on the street
     private List<Stop> Stops;
 
+    // avg Speed of vehicles on the Street in meters/s
+    private float avgSpeedInMpS;
+
     public Street(String Id, Coordinate... points) {
         this.Id = Id;
         this.Stops = new ArrayList<>();
         for (Coordinate coordinate : points) {
             coordinates.add(coordinate);
         }
+        this.avgSpeedInMpS = 14;
+    }
+
+    public Street(String Id, float avgSpeedInMpS, Coordinate... points) {
+        this.Id = Id;
+        this.Stops = new ArrayList<>();
+        for (Coordinate coordinate : points) {
+            coordinates.add(coordinate);
+        }
+        this.avgSpeedInMpS = avgSpeedInMpS;
     }
 
     /**
@@ -92,12 +105,12 @@ public class Street {
 
             if (lineContains) {
                 this.Stops.add(stop);
-                stop.setStreet(this);
+                stop.setStreet(this, i);
                 return true;
             }
         }
 
-        return false;
+        throw new IllegalArgumentException("Stop coordinate isn't on street");
 
     }
 
@@ -109,8 +122,26 @@ public class Street {
     }
 
     /**
+     * Check if entered point is one of the points in Street
+     * 
+     * @param point finding point
+     * @return index of point, -1 if is not aviable;
+     */
+    public int isPoint(Coordinate point) {
+
+        for (int i = 0; i < coordinates.size(); i++) {
+            if (coordinates.get(i).equals(point)) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
      * Return list of Coordinates that defines street. First is always the start of
-     * the Street, the last is end
+     * 
+     * 
      * 
      * @return the list of Coordinates
      */
@@ -123,6 +154,13 @@ public class Street {
      */
     public List<Stop> getStops() {
         return Stops;
+    }
+
+    /**
+     * @return the avgSpeedInMpS
+     */
+    public float getAvgSpeedInMpS() {
+        return avgSpeedInMpS;
     }
 
     /**
@@ -146,15 +184,26 @@ public class Street {
     /**
      * Check if this street follows another street
      * 
-     * @param s the other street to compare
-     * @return true if streets follows, else false
+     * @param street the other street to compare
+     * @return array of two ints, which represents index of point of the street,
+     *         where the streets cross, first for this street and second one from
+     *         street s. Return empty array, if streets doesn't follow
      */
-    public boolean follows(Street s) {
-        if (this.begin().equals(s.end()) || this.begin().equals(s.begin()) || this.end().equals(s.end())
-                || this.end().equals(s.begin()))
-            return true;
-        else
-            return false;
+    public int[] follows(Street street) {
+        for (int i = 0; i < this.coordinates.size(); i++) {
+            for (int j = 0; j < street.getCoordinates().size(); j++) {
+                Coordinate coord1 = this.coordinates.get(i);
+                Coordinate coord2 = street.getCoordinates().get(j);
+
+                if (coord1.equals(coord2)) {
+                    int[] A = { i, j };
+                    return A;
+                }
+            }
+        }
+
+        return new int[0];
+
     }
 
     @Override
