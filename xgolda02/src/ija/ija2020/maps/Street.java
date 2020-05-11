@@ -33,7 +33,12 @@ public class Street {
         }
         this.avgSpeedInMpS = 14;
     }
-
+    public Street(String Id, List<Coordinate> c) {
+        this.Id = Id;
+        this.Stops = new ArrayList<>();
+        this.coordinates = c;
+        this.avgSpeedInMpS = 14;
+    }
     public Street(String Id, float avgSpeedInMpS, Coordinate... points) {
         this.Id = Id;
         this.Stops = new ArrayList<>();

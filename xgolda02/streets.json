@@ -1,3 +1,21 @@
 {
-	"s": "hello"
+	"streets": [
+		{"id": "firstSt", "coordinates": [
+			{"x": 100, "y": 100},
+			{"x": 100, "y": 200},
+			{"x": 200, "y": 200}
+		], "stops": [
+			{"id": "firstStop", "x": 100, "y": 140},
+			{"id": "SecondStop", "x": 120, "y": 200}
+		]},
+		{"id": "secSt", "coordinates": [
+			{"x": 200, "y": 50},
+			{"x": 200, "y": 200},
+			{"x": 200, "y": 210},
+			{"x": 300, "y": 210}
+		], "stops": [
+			{"id": "firstStop2", "x": 200, "y": 160},
+			{"id": "SecondStop2", "x": 220, "y": 210}
+		]}
+	]
 }

@@ -4,6 +4,7 @@ package ija.ija2020.main;
  *
  * @author Vojtěch Golda
  */
+import ija.ija2020.guiMaps.GuiStreet;
 import ija.ija2020.guiMaps.GuiVehicle;
 import ija.ija2020.maps.Vehicle;
 import javafx.application.Platform;
@@ -23,7 +24,7 @@ import java.util.TimerTask;
 
 public class Controller {
     Timer timer;
-    List<MapObject> mapObjects;
+    List<GuiStreet> mapObjects;
     int time = 0;
     List<Vehicle> vehicles = null;
     List<Shape> movable = null;
@@ -67,7 +68,7 @@ public class Controller {
         go();
     }
 
-    public void setMapObjects(List<MapObject> mapObjects){
+    public void setMapObjects(List<GuiStreet> mapObjects){
         this.mapObjects = mapObjects;
         for(MapObject mapObject : mapObjects ){
             map.getChildren().addAll(mapObject.getEl(scale));

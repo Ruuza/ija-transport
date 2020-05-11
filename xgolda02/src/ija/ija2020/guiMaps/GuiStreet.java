@@ -15,6 +15,9 @@ public class GuiStreet extends Street implements MapObject {
     public GuiStreet(String Id, Coordinate... points) {
         super(Id, points);
     }
+    public GuiStreet(String Id, List<Coordinate> points) {
+        super(Id, points);
+    }
 
     @Override
     public List<Shape> getEl(float scale) {

@@ -8,6 +8,7 @@ package ija.ija2020.main;
 import ija.ija2020.guiMaps.GuiStreet;
 import ija.ija2020.maps.Coordinate;
 import ija.ija2020.maps.Stop;
+import ija.ija2020.maps.Street;
 import ija.ija2020.maps.Vehicle;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -19,10 +20,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ija.ija2020.main.Loader.*;
+
 public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
+        List<GuiStreet> streetList = getStreets("streets.json");
+        if(streetList.isEmpty()){
+            System.exit(1);
+        }
        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/layout2.fxml"));
         BorderPane root = null;
         try {
@@ -32,21 +39,14 @@ public class Main extends Application {
         }
         Scene scene = new Scene(root);
         stage.setScene(scene);
-
         //Displaying the contents of a scene
         stage.show();
 
-        List<MapObject> mapObjects = new ArrayList<MapObject>();
-        GuiStreet s = new GuiStreet("First", new Coordinate(200,200), new Coordinate(300,300), new Coordinate(200,300));
-        s.addStop(new Stop("First", new Coordinate(200, 200)));
-        s.addStop(new Stop("Second", new Coordinate(250, 300)));
-        mapObjects.add(s);
 
         Controller controller = loader.getController();
-        controller.setMapObjects(mapObjects);
+        controller.setMapObjects(streetList);
 
         List<Vehicle> vehicles = new ArrayList<Vehicle>();
-        vehicles.add(new Vehicle());
         controller.setVehicles(vehicles);
         controller.go();
     }
