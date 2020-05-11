@@ -1,0 +1,25 @@
+
+
+<project>
+
+    <target name="clean">
+
+    </target>
+
+    <target name="build">
+        <mkdir dir="build/classes"/>
+        <javac srcdir="src" destdir="build/classes"/>
+        <mkdir dir="build/jar"/>
+        <jar destfile="build/jar/javamyfx.jar" basedir="build/classes">
+            <manifest>
+                <attribute name="Main-Class" value="ija.ija2020.main.Main"/>
+            </manifest>
+		<fileset file="src/ija/ija2020/main/resources/layout2.fxml" />
+        </jar>
+    </target>
+
+    <target name="run">
+        <java jar="build/jar/javamyfx.jar" fork="true"/>
+    </target>
+
+</project>
