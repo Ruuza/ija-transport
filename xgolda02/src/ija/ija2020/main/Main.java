@@ -6,10 +6,7 @@ package ija.ija2020.main;
  */
 
 import ija.ija2020.guiMaps.GuiStreet;
-import ija.ija2020.maps.Coordinate;
-import ija.ija2020.maps.Stop;
-import ija.ija2020.maps.Street;
-import ija.ija2020.maps.Vehicle;
+import ija.ija2020.maps.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -30,6 +27,8 @@ public class Main extends Application {
         if(streetList.isEmpty()){
             System.exit(1);
         }
+        List<Vehicle> vehicles = new ArrayList<Vehicle>();
+        List<Line> lines = getLines("lines.json", streetList, vehicles);
        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/layout2.fxml"));
         BorderPane root = null;
         try {
@@ -46,7 +45,6 @@ public class Main extends Application {
         Controller controller = loader.getController();
         controller.setMapObjects(streetList);
 
-        List<Vehicle> vehicles = new ArrayList<Vehicle>();
         controller.setVehicles(vehicles);
         controller.go();
     }

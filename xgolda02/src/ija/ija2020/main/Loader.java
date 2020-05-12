@@ -1,9 +1,7 @@
 package ija.ija2020.main;
 
 import ija.ija2020.guiMaps.GuiStreet;
-import ija.ija2020.maps.Coordinate;
-import ija.ija2020.maps.Stop;
-import ija.ija2020.maps.Street;
+import ija.ija2020.maps.*;
 import org.json.*;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -60,5 +58,81 @@ public class Loader {
 
         }
         return l;
+    }
+    //no need to comment this, the code is pretty self explanatory. Refer to the other function or the JSON file in case of doubts
+    public static List<Line> getLines(String filename, List<GuiStreet> gStreets, List<Vehicle> vehicles){
+        int stArrLen = 0;
+        JSONObject obj = init(filename);
+        List<Line> lines = new ArrayList<Line>();
+        JSONArray jLines = obj.getJSONArray("lines");
+        for(int i = 0; i<jLines.length(); i++){
+            JSONObject jLine = jLines.getJSONObject(i);
+            System.out.println("Parsing line " + jLine.getString("id"));
+
+            List<Street> streets = new ArrayList<Street>();
+            List<Stop> stops = new ArrayList<Stop>();
+
+            JSONArray jStreets = jLine.getJSONArray("streets");
+            for(int p = 0; p<jStreets.length(); p++){
+                stArrLen++;
+                JSONObject jStreet = jStreets.getJSONObject(p);
+
+                //find the street
+                Street street = findStreetById(gStreets, jStreet.getString("id"));
+                streets.add(street);
+                System.out.println("    parsing street " + jStreet.getString("id"));
+                JSONArray jStops = jStreet.getJSONArray("stops");
+                for(int o =0; o<jStops.length(); o++){
+                    JSONObject jStop = jStops.getJSONObject(o);
+                    stops.add(findStopById(street.getStops(), jStop.getString("id") ));
+                    System.out.println("        Parsing stop " + jStop.getString("id"));
+                }
+            }
+
+
+
+            //convert the list to an array because reasons
+            Street[] stAr = new Street[stArrLen];
+            int o = 0;
+            for(Street street: streets){
+                stAr[o] = street;
+                o++;
+
+            }
+
+            Line line = new Line(jLine.getString("id"), stAr);
+            for(Stop stop: stops){
+                line.addStop(stop);
+            }
+            JSONArray jVehicles = jLine.getJSONArray("vehicles");
+            for(int p = 0; p<jVehicles.length(); p++){
+                JSONObject vehicle = jVehicles.getJSONObject(p);
+                Vehicle v = new Vehicle(vehicle.getString("id"));
+                v.setActiveLine(line);
+                vehicles.add(v);
+                System.out.println("    Parsing veh "+vehicle.getString("id"));
+            }
+        }
+
+
+        return lines;
+    }
+
+    private static Street findStreetById(List<GuiStreet> streets, String key){
+        for(Street street: streets){
+            if(street.getId().equals(key)){
+                return street;
+            }
+        }
+        return null;
+    }
+
+    private static Stop findStopById(List<Stop> stops, String key){
+        for(Stop stop: stops){
+            if(stop.getId().equals(key)){
+                return stop;
+            }
+        }
+        return null;
     }
 }

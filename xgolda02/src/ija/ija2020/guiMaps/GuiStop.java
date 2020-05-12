@@ -25,7 +25,7 @@ public class GuiStop extends Stop implements MapObject {
         Coordinate c = this.getCoordinate();
         List<Shape> shapeList = new ArrayList<Shape>();
         shapeList.add(new Rectangle((c.getX() - 5) * scale, (c.getY() - 5) * scale, 10 * scale, 10 * scale));
-        shapeList.add(new Text((c.getX() + 10) * scale, c.getY() * scale, this.getId()));
+        shapeList.add(new Text((c.getX() + 6) * scale, (c.getY() - 3) * scale, this.getId()));
         return shapeList;
     }
 }
