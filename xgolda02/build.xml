@@ -12,6 +12,7 @@
             <classpath>
                 <pathelement path="lib/json.jar"/>
             </classpath>
+            <exclude name="**/UnitTests.java"/>
         </javac>
         <mkdir dir="build/jar"/>
         <jar destfile="build/jar/javamyfx.jar" basedir="build/classes">
