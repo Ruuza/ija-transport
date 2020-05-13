@@ -46,6 +46,12 @@ public class Line {
             throw new IllegalArgumentException("At least two streets expected as argument");
         }
 
+        for (Street street : streets) {
+            if (street == null) {
+                throw new IllegalArgumentException("null street");
+            }
+        }
+
         this.inputStreets = streets;
 
         generateRoute();
