@@ -136,6 +136,7 @@ public class Vehicle {
         if (remainTime <= 0) {
             return true;
         } else {
+            currentRoutePointer += 1;
             updateSimulatedPosition(remainTime);
         }
 
