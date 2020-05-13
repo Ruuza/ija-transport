@@ -108,10 +108,21 @@ public class Loader {
             for(int p = 0; p<jVehicles.length(); p++){
                 JSONObject vehicle = jVehicles.getJSONObject(p);
                 Vehicle v = new Vehicle(vehicle.getString("id"));
-                v.setActiveLine(line);
+                line.addVehicle(v);
                 vehicles.add(v);
                 System.out.println("    Parsing veh "+vehicle.getString("id"));
             }
+
+
+            //add a bunch of deploytimes. Right now all the lines are deploying at the same time - perhaps i can add it as a feature later
+            for(int f = 0; f< 24*60*60*1000; f+=5000){
+                line.addDeployTime(f);
+            }
+
+
+
+
+            lines.add(line);
         }
 
 

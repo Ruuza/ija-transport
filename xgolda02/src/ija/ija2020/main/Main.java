@@ -23,12 +23,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        List<GuiStreet> streetList = getStreets("streets.json");
+        List<GuiStreet> streetList = getStreets("streets2.json");
         if(streetList.isEmpty()){
             System.exit(1);
         }
         List<Vehicle> vehicles = new ArrayList<Vehicle>();
-        List<Line> lines = getLines("lines.json", streetList, vehicles);
+        List<Line> lines = getLines("lines2.json", streetList, vehicles);
        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/layout2.fxml"));
         BorderPane root = null;
         try {
@@ -44,8 +44,8 @@ public class Main extends Application {
 
         Controller controller = loader.getController();
         controller.setMapObjects(streetList);
-
         controller.setVehicles(vehicles);
+        controller.setLines(lines);
         controller.go();
     }
     public static void main(String args[]){
