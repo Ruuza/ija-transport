@@ -125,6 +125,7 @@ public class Vehicle {
                 lastUpdateTime = time;
                 return true;
             } else {
+                this.reaminingMillisecondsOnStop = 0;
                 deltaTime -= waitTime;
                 if (deltaTime < 1000) {
                     deltaTime = 1000;
