@@ -14,6 +14,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,12 +24,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        List<GuiStreet> streetList = getStreets("streets2.json");
+        List<GuiStreet> streetList = getStreets("streets.json");
         if(streetList.isEmpty()){
             System.exit(1);
         }
         List<Vehicle> vehicles = new ArrayList<Vehicle>();
-        List<Line> lines = getLines("lines2.json", streetList, vehicles);
+        List<Line> lines = getLines("lines.json", streetList, vehicles);
        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/layout2.fxml"));
         BorderPane root = null;
         try {
@@ -42,11 +43,22 @@ public class Main extends Application {
         stage.show();
 
 
+
+
+
+
+
         Controller controller = loader.getController();
         controller.setMapObjects(streetList);
         controller.setVehicles(vehicles);
         controller.setLines(lines);
         controller.go();
+
+        List<AbstractMap.SimpleImmutableEntry<Coordinate, Stop>> cs = lines.get(0).getRoute();
+        for(AbstractMap.SimpleImmutableEntry<Coordinate, Stop> c: cs){
+            System.out.println("X: " + c.getKey().getX() + "/Y:" + c.getKey().getY());;
+        }
+
     }
     public static void main(String args[]){
         launch(args);
