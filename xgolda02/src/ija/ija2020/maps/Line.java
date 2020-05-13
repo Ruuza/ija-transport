@@ -161,7 +161,11 @@ public class Line {
     }
 
     public boolean addStop(Stop stop) {
+        if (stop == null) {
+            throw new IllegalArgumentException("stop cannot be null");
+        }
         if (stops.contains(stop)) {
+
             return false;
         } else {
             stops.add(stop);
