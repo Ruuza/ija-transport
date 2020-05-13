@@ -126,8 +126,8 @@ public class Vehicle {
                 return true;
             } else {
                 deltaTime -= waitTime;
-                if (deltaTime == 0) {
-                    deltaTime = 10;
+                if (deltaTime < 1000) {
+                    deltaTime = 1000;
                 }
             }
 
