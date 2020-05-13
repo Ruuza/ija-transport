@@ -20,7 +20,7 @@ public class Street {
     public static final double SELECTION_FUZZINESS = 3;
 
     // Stops on the street
-    private List<Stop> Stops;
+    private List<Stop> Stops = new ArrayList<>();
 
     // avg Speed of vehicles on the Street in meters/s
     private float avgSpeedInMpS;
