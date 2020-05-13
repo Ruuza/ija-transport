@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.AbstractMap.SimpleImmutableEntry;
-import java.util.stream.IntStream;
 
 public class Line {
+
+    public static final int msInDay = 86400000;
 
     // Id/Name of the Line
     private String ID;
@@ -20,6 +21,12 @@ public class Line {
 
     // Array of streets to create path with
     private Street[] inputStreets;
+
+    // When do deploy Vehicle on Line. In miliseconds from 0:00
+    private List<Integer> deployTimes = new ArrayList<>();
+
+    // Last time deploy was checked
+    private int lastDeployTime = 0;
 
     // List of stops to stop at
     private List<Stop> stops = new ArrayList<>();
@@ -44,7 +51,7 @@ public class Line {
         generateRoute();
     }
 
-    public void generateRoute() {
+    private void generateRoute() {
 
         this.route = new ArrayList<>();
 
@@ -121,6 +128,32 @@ public class Line {
 
     }
 
+    public boolean addDeployTime(int time) {
+
+        if (time >= msInDay) {
+            System.err.println("time has to be lower than miliseconds in day");
+            return false;
+        }
+
+        if (time < 0) {
+            System.err.println("time has to be postivie number");
+            return false;
+        }
+
+        if (deployTimes.contains(time)) {
+            return false;
+        }
+        deployTimes.add(time);
+        return true;
+    }
+
+    public boolean removeTime(int time) {
+        if (deployTimes.contains(time)) {
+            deployTimes.remove(time);
+        }
+        return false;
+    }
+
     public boolean addStop(Stop stop) {
         if (stops.contains(stop)) {
             return false;
@@ -130,6 +163,84 @@ public class Line {
             return true;
         }
 
+    }
+
+    public List<Vehicle> getAvailableVehicles() {
+        List<Vehicle> availableVehicles = new ArrayList<>();
+        for (Vehicle vehicle : this.vehicles) {
+            if (!vehicle.isDeployed()) {
+                availableVehicles.add(vehicle);
+            }
+        }
+        return availableVehicles;
+    }
+
+    public List<Vehicle> getunAvailableVehicles() {
+        List<Vehicle> unavailableVehicles = new ArrayList<>();
+        for (Vehicle vehicle : this.vehicles) {
+            if (vehicle.isDeployed()) {
+                unavailableVehicles.add(vehicle);
+            }
+        }
+        return unavailableVehicles;
+    }
+
+    public void updateVehicles(int time) {
+        for (Vehicle vehicle : this.vehicles) {
+            if (vehicle.isDeployed()) {
+                vehicle.getSimulatedPosition(time);
+            }
+        }
+    }
+
+    public boolean checkDeploy(int time) {
+        if (time >= msInDay) {
+            System.err.println("time has to be lower than miliseconds in day");
+            return false;
+        }
+
+        if (time < 0) {
+            System.err.println("time has to be postivie number");
+            return false;
+        }
+        if (getRoute().isEmpty()) {
+            System.out.println("The route is empty!");
+        }
+        if (getDeployTimes().isEmpty()) {
+            System.out.println("The are no deploy times!");
+        }
+
+        if (this.lastDeployTime == time) {
+            return false;
+        }
+
+        boolean deploy = false;
+
+        for (Integer deployTime : this.deployTimes) {
+            if (deployTime <= time && deployTime > lastDeployTime) {
+                deploy = true;
+            }
+        }
+
+        lastDeployTime = time;
+        if (!deploy) {
+            return false;
+        }
+
+        updateVehicles(time);
+        List<Vehicle> availableVehicles = getAvailableVehicles();
+
+        if (availableVehicles.isEmpty()) {
+            System.out.println("No vehicle is available");
+            return false;
+        }
+
+        return deploy(availableVehicles.get(0), time);
+
+    }
+
+    private boolean deploy(Vehicle vehicle, int time) {
+        return vehicle.deploy(time);
     }
 
     public boolean removeStop(Stop stop) {
@@ -149,12 +260,72 @@ public class Line {
         throw new IllegalArgumentException("no street point's in route");
     }
 
+    public boolean addVehicle(Vehicle vehicle) {
+        if (this.vehicles.contains(vehicle)) {
+            return false;
+        }
+        this.vehicles.add(vehicle);
+        vehicle.setActiveLine(this);
+        return false;
+    }
+
+    public boolean removeVehicle(Vehicle vehicle) {
+        if (!this.vehicles.contains(vehicle)) {
+            return false;
+        }
+        this.vehicles.remove(vehicle);
+        vehicle.setActiveLine(null);
+        return false;
+    }
+
     public Coordinate getStartCoordinateOfRoute() {
         return route.get(0).getKey();
     }
 
     public List<SimpleImmutableEntry<Coordinate, Stop>> getRoute() {
         return Collections.unmodifiableList(route);
+    }
+
+    /**
+     * @return the deployTimes
+     */
+    public List<Integer> getDeployTimes() {
+        return deployTimes;
+    }
+
+    /**
+     * @return the lastDeployTime
+     */
+    public int getLastDeployTime() {
+        return lastDeployTime;
+    }
+
+    /**
+     * @return the iD
+     */
+    public String getID() {
+        return ID;
+    }
+
+    /**
+     * @return the inputStreets
+     */
+    public Street[] getInputStreets() {
+        return inputStreets;
+    }
+
+    /**
+     * @return the stops
+     */
+    public List<Stop> getStops() {
+        return stops;
+    }
+
+    /**
+     * @return the lastPoint
+     */
+    public int getLastPoint() {
+        return lastPoint;
     }
 
     @Override

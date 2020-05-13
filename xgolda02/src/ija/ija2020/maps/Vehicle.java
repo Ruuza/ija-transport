@@ -1,6 +1,13 @@
 package ija.ija2020.maps;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.AbstractMap.SimpleImmutableEntry;
+
 public class Vehicle {
+
+    // How many milliseconds is in one day
+    public static final int msInDay = 86400000;
 
     // Unique id of the vehicle
     private String Id;
@@ -11,17 +18,11 @@ public class Vehicle {
     // Determine, if wehicle is deployed on the road
     private boolean isDeployed = false;
 
-    // Current street where the vehicle is located
-    private Street currentStreet;
-
-    // after or on which point of the street the vehicle is located
-    private int partOfStreetCounter;
+    // Transport Line under which this vehicle operate
+    private Line activeLine;
 
     // point on the current route
     private int currentRoutePointer = 0;
-
-    // Transport Line under which this vehicle operate
-    private Line activeLine;
 
     // determine position in percent on current road
     private float percentOfLineCompleted;
@@ -31,18 +32,26 @@ public class Vehicle {
     private int lastUpdateTime;
 
     // How many seconds remain until vehicle can leave the stop
-    private int reaminingSecodnsOnStop = 0;
+    private int reaminingMillisecondsOnStop = 0;
+
+    // Speed in meters per second
+    private float speed = 13.4f;
+
+    // Save route, so changes in Line won't affect this ride
+    private List<SimpleImmutableEntry<Coordinate, Stop>> activeRoute = new ArrayList<>();
 
     public Vehicle(String id) {
-        assert id != null;
+        if (id == null) {
+            throw new IllegalArgumentException("null parrameters not supported");
+        }
         this.Id = id;
     }
 
-    public Vehicle(String id, Line line) {
-        assert id != null;
-        assert line != null;
-        this.Id = id;
-        this.activeLine = line;
+    /**
+     * @return the isDeployed
+     */
+    public boolean isDeployed() {
+        return isDeployed;
     }
 
     public Coordinate getSimulatedPosition(int time) {
@@ -52,42 +61,148 @@ public class Vehicle {
             return null;
         }
 
+        if (time >= msInDay) {
+            System.err.println("time has to be lower than miliseconds in day");
+            return null;
+        }
+
+        if (time < 0) {
+            System.err.println("time has to be postivie number");
+            return null;
+        }
+
+        updateSimulatedPosition(time);
         return coord;
     }
 
-    // public boolean deploy(int time) {
-    // if (isDeployed) {
-    // return false;
-    // }
-    // if (activeLine == null) {
-    // return false;
-    // }
-    // if (time < 0) {
-    // System.err.println("time is lesser than zero");
-    // return false;
-    // }
+    private boolean updateSimulatedPosition(int time) {
 
-    // this.isDeployed = true;
-    // this.lastUpdateTime = time;
-    // this.coord = activeLine.getStartPosition();
-    // this.currentStreet = activeLine.getRoute().get(0).getKey();
-    // // this.partOfStreetCounter =
+        if (!isDeployed) {
+            return true;
+        }
 
-    // if (this.coord == null || this.currentStreet == null) {
-    // System.err.println("Vehicle " + this.Id + " cannot be deployed: some value in
-    // Line is null");
-    // return false;
-    // }
+        if (time >= msInDay) {
+            System.err.println("time has to be lower than miliseconds in day");
+            return false;
+        }
 
-    // return true;
-    // }
+        if (time < 0) {
+            System.err.println("time has to be postivie number");
+            return false;
+        }
+
+        if (time == lastUpdateTime) {
+            return true;
+        }
+
+        if (currentRoutePointer == activeRoute.size() - 1) {
+            isDeployed = false;
+            return true;
+        }
+
+        int deltaTime;
+
+        if (time > lastUpdateTime) {
+            deltaTime = time - lastUpdateTime;
+        } else {
+            deltaTime = (msInDay - lastUpdateTime) + time;
+        }
+
+        // if vehicle is on the stop, try complete wait time.
+        if (percentOfLineCompleted == 0 && activeRoute.get(currentRoutePointer).getValue() != null) {
+            int waitTime;
+            if (reaminingMillisecondsOnStop > 0) {
+                waitTime = reaminingMillisecondsOnStop;
+            } else {
+                waitTime = activeRoute.get(currentRoutePointer).getValue().getWaitTime();
+            }
+
+            if (waitTime > deltaTime) {
+                waitTime -= deltaTime;
+                reaminingMillisecondsOnStop = waitTime;
+                return true;
+            } else {
+                deltaTime -= waitTime;
+                if (deltaTime == 0) {
+                    deltaTime = 1;
+                }
+            }
+
+        }
+
+        // move to next point
+        int remainTime = toNextPoint(deltaTime);
+
+        if (remainTime <= 0) {
+            return true;
+        } else {
+            updateSimulatedPosition(remainTime);
+        }
+
+        return true;
+
+    }
+
+    private int toNextPoint(int deltaTime) {
+        Coordinate nextCoordinate = activeRoute.get(currentRoutePointer + 1).getKey();
+
+        double distance = coord.distance(nextCoordinate);
+
+        int timeDistance = distanceToTime(distance);
+
+        // When the vehicle is already in next point
+        if (deltaTime >= timeDistance) {
+            this.coord = nextCoordinate;
+            return deltaTime - timeDistance;
+        }
+
+        // else caclulate the position
+        double coefficient = ((double) deltaTime) / timeDistance;
+
+        this.coord = new Coordinate((int) Math.round(coord.getX() + (coefficient * coord.diffX(nextCoordinate))),
+                (int) Math.round(coord.getY() + (coefficient * coord.diffY(nextCoordinate))));
+
+        return 0;
+
+    }
+
+    private int distanceToTime(double distance) {
+        return (int) ((distance * 1000) / speed);
+    }
+
+    public boolean deploy(int time) {
+        if (isDeployed) {
+            return false;
+        }
+        if (activeLine == null) {
+            return false;
+        }
+        if (time < 0) {
+            System.err.println("time is lesser than zero");
+            return false;
+        }
+
+        this.isDeployed = true;
+        this.lastUpdateTime = time;
+        this.activeRoute = activeLine.getRoute();
+        this.coord = activeRoute.get(0).getKey();
+        this.currentRoutePointer = 0;
+        this.percentOfLineCompleted = 0;
+        this.reaminingMillisecondsOnStop = 0;
+
+        return true;
+    }
 
     /**
      * @param activeLine the activeLine to set
      */
     public void setActiveLine(Line activeLine) {
         isDeployed = false;
+        if (this.activeLine != null && activeLine != null) {
+            throw new IllegalAccessError("Vehicle already assigned");
+        }
         this.activeLine = activeLine;
+
     }
 
 }

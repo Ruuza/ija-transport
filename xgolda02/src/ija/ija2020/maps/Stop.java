@@ -1,7 +1,5 @@
 package ija.ija2020.maps;
 
-import java.util.AbstractMap.SimpleImmutableEntry;
-
 /**
  * Representing the stop. The stop has to have unique Id, but coordinate can be
  * unsigned.
@@ -16,9 +14,9 @@ public class Stop {
     // the Street on which the stop is located
     private Street street;
     // After which point of street is the Stop located
-    private int afterWhichPointOnStreet;
+    private int afterWhichPointOfStreet;
     // Time in ms that took vehicle to stay on stop
-    private int waitTime;
+    private int waitTime = 30000;
 
     /**
      * 
@@ -48,8 +46,11 @@ public class Stop {
         return this.coordinate;
     }
 
+    /**
+     * @return the afterWhichPointOfStreet
+     */
     public int getAfterWhichPointOfStreet() {
-        return afterWhichPointOnStreet;
+        return afterWhichPointOfStreet;
     }
 
     /**
@@ -57,9 +58,9 @@ public class Stop {
      * 
      * @param street street where stop is located
      */
-    public void setStreet(Street street, int afterWhichPointOnStreet) {
+    public void setStreet(Street street, int afterWhichPointOfStreet) {
         this.street = street;
-        this.afterWhichPointOnStreet = afterWhichPointOnStreet;
+        this.afterWhichPointOfStreet = afterWhichPointOfStreet;
     }
 
     /**
@@ -69,6 +70,13 @@ public class Stop {
      */
     public Street getStreet() {
         return this.street;
+    }
+
+    /**
+     * @return the waitTime
+     */
+    public int getWaitTime() {
+        return waitTime;
     }
 
     @Override
