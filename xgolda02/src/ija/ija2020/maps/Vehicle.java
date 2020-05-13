@@ -24,9 +24,6 @@ public class Vehicle {
     // point on the current route
     private int currentRoutePointer = 0;
 
-    // determine position in percent on current road
-    private float percentOfLineCompleted;
-
     // Last time, that position was calculated with. Time is in format of seconds
     // after 0:00.
     private int lastUpdateTime;
@@ -109,7 +106,8 @@ public class Vehicle {
         }
 
         // if vehicle is on the stop, try complete wait time.
-        if (percentOfLineCompleted == 0 && activeRoute.get(currentRoutePointer).getValue() != null) {
+        if (coord.equals(activeRoute.get(currentRoutePointer).getKey())
+                && activeRoute.get(currentRoutePointer).getValue() != null) {
             int waitTime;
             if (reaminingMillisecondsOnStop > 0) {
                 waitTime = reaminingMillisecondsOnStop;
@@ -120,6 +118,7 @@ public class Vehicle {
             if (waitTime > deltaTime) {
                 waitTime -= deltaTime;
                 reaminingMillisecondsOnStop = waitTime;
+                lastUpdateTime = time;
                 return true;
             } else {
                 deltaTime -= waitTime;
@@ -133,11 +132,19 @@ public class Vehicle {
         // move to next point
         int remainTime = toNextPoint(deltaTime);
 
+        int originalTimeWithoutRemain = time - remainTime;
+
+        if (originalTimeWithoutRemain < lastUpdateTime) {
+            System.err.println("Unexpected vehicle time behaviour. Please report to administrator");
+            originalTimeWithoutRemain = lastUpdateTime;
+        }
+
         if (remainTime <= 0) {
+            lastUpdateTime = time;
             return true;
         } else {
             currentRoutePointer += 1;
-            updateSimulatedPosition(remainTime);
+            updateSimulatedPosition(originalTimeWithoutRemain);
         }
 
         return true;
@@ -160,8 +167,11 @@ public class Vehicle {
         // else caclulate the position
         double coefficient = ((double) deltaTime) / timeDistance;
 
-        this.coord = new Coordinate((int) Math.round(coord.getX() + (coefficient * coord.diffX(nextCoordinate))),
-                (int) Math.round(coord.getY() + (coefficient * coord.diffY(nextCoordinate))));
+        double deltaX = nextCoordinate.getX() - coord.getX();
+        double deltaY = nextCoordinate.getY() - coord.getY();
+
+        this.coord = new Coordinate((int) Math.round(coord.getX() + (coefficient * deltaX)),
+                (int) Math.round(coord.getY() + (coefficient * deltaY)));
 
         return 0;
 
@@ -188,7 +198,6 @@ public class Vehicle {
         this.activeRoute = activeLine.getRoute();
         this.coord = activeRoute.get(0).getKey();
         this.currentRoutePointer = 0;
-        this.percentOfLineCompleted = 0;
         this.reaminingMillisecondsOnStop = 0;
 
         return true;
