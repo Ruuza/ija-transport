@@ -61,6 +61,103 @@
         {"id": "vl2-3"},
         {"id": "vl2-4"}
       ]
+    },
+    {"id": "line2",
+      "streets": [
+        {"id": "sth4", "stops": [
+          {"id": "sth4stop1"}
+        ]},
+        {"id": "stv3", "stops": [
+          {"id": "stv3stop1"}
+
+        ]},
+        {"id": "stv4", "stops": [
+
+        ]},
+        {"id": "sth3", "stops": [
+
+        ]},
+        {"id": "stv1", "stops": [
+          {"id": "stv1stop1"}
+        ]},
+        {"id": "sth1", "stops": [
+
+        ]},
+        {"id": "stv2", "stops": [
+          {"id": "stv2stop1"}
+        ]},
+        {"id": "sth4", "stops": [
+          {"id": "sth4stop1"}
+        ]}
+      ],
+      "vehicles": [
+        {"id": "vl2-1"},
+        {"id": "vl2-2"},
+        {"id": "vl2-3"},
+        {"id": "vl2-4"}
+      ]
+    },
+    {"id": "line3",
+      "streets": [
+        {"id": "stv3", "stops": [
+          {"id": "stv3stop1"}
+        ]},
+        {"id": "stt3", "stops": [
+          {"id": "stt3stop1"}
+
+        ]},
+        {"id": "stt2", "stops": [
+          {"id": "stt2stop1"}
+        ]},
+        {"id": "stt1", "stops": [
+          {"id": "stt1stop1"}
+        ]},
+        {"id": "stv3", "stops": [
+          {"id": "stv3stop1"}
+        ]}
+      ],
+      "vehicles": [
+        {"id": "vl3-1"},
+        {"id": "vl3-2"},
+        {"id": "vl3-3"},
+        {"id": "vl3-4"}
+      ]
+    },
+    {"id": "line4",
+      "streets": [
+        {"id": "sth2", "stops": [
+          {"id": "sth2stop1"}
+        ]},
+        {"id": "stv6", "stops": []},
+        {"id": "std1", "stops": []},
+        {"id": "stdv1", "stops": [
+          {"id": "stdv1stop1"}
+        ]},
+        {"id": "stdh3", "stops": []},
+
+        {"id": "stdv2", "stops": [
+          {"id": "stdv2stop1"}
+        ]},
+        {"id": "stdh2", "stops": []},
+
+        {"id": "stdv3", "stops": [
+          {"id": "stdv1stop3"}
+        ]},
+        {"id": "stdh1", "stops": []},
+
+
+        {"id": "std1", "stops": []},
+        {"id": "stv6", "stops": []},
+        {"id": "sth2", "stops": [
+          {"id": "sth2stop1"}
+        ]}
+      ],
+      "vehicles": [
+        {"id": "vl4-1"},
+        {"id": "vl4-2"},
+        {"id": "vl4-3"},
+        {"id": "vl4-4"}
+      ]
     }
   ]
 }
