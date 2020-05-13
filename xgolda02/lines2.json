@@ -1,15 +1,23 @@
 {
   "lines": [
+
     {"id": "line1",
       "streets": [
-        {"id": "firstSt", "stops": [
-          {"id": "stop1"}
+        {"id": "sth1", "stops": [
+          {"id": "sth1stop1"}
         ]},
-        {"id": "secSt", "stops": [
-          {"id": "stop2"}
+        {"id": "stv1", "stops": [
+          {"id": "stv1stop1"},{"id": "stv1stop2"}
+
         ]},
-        {"id": "firstSt", "stops": [
-          {"id": "stop1"}
+        {"id": "sth4", "stops": [
+
+        ]},
+        {"id": "stv2", "stops": [
+          {"id": "stv2stop1"}
+        ]},
+        {"id": "sth1", "stops": [
+          {"id": "sth1stop1"}
         ]}
       ],
       "vehicles": [
@@ -17,6 +25,41 @@
         {"id": "vl1-2"},
         {"id": "vl1-3"},
         {"id": "vl1-4"}
+      ]
+    },
+    {"id": "line2",
+      "streets": [
+        {"id": "sth4", "stops": [
+          {"id": "sth4stop1"}
+        ]},
+        {"id": "stv3", "stops": [
+          {"id": "stv3stop1"}
+
+        ]},
+        {"id": "stv4", "stops": [
+
+        ]},
+        {"id": "sth3", "stops": [
+
+        ]},
+        {"id": "stv1", "stops": [
+          {"id": "stv1stop1"}
+        ]},
+        {"id": "sth1", "stops": [
+
+        ]},
+        {"id": "stv2", "stops": [
+          {"id": "stv2stop1"}
+        ]},
+        {"id": "sth4", "stops": [
+          {"id": "sth4stop1"}
+        ]}
+      ],
+      "vehicles": [
+        {"id": "vl2-1"},
+        {"id": "vl2-2"},
+        {"id": "vl2-3"},
+        {"id": "vl2-4"}
       ]
     }
   ]
