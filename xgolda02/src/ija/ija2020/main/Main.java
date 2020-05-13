@@ -44,8 +44,8 @@ public class Main extends Application {
 
         Controller controller = loader.getController();
         controller.setMapObjects(streetList);
-
         controller.setVehicles(vehicles);
+        controller.setLines(lines);
         controller.go();
     }
     public static void main(String args[]){

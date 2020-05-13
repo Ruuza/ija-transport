@@ -6,6 +6,7 @@ package ija.ija2020.main;
  */
 import ija.ija2020.guiMaps.GuiStreet;
 import ija.ija2020.guiMaps.GuiVehicle;
+import ija.ija2020.maps.Line;
 import ija.ija2020.maps.Vehicle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -23,11 +24,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Controller {
-    Timer timer;
-    List<GuiStreet> mapObjects;
-    int time = 0;
-    List<Vehicle> vehicles = null;
-    List<Shape> movable = null;
+    private Timer timer;
+    private List<GuiStreet> mapObjects;
+    private int time = 0;
+    private List<Vehicle> vehicles = null;
+    private List<Shape> movable = null;
+    private List<Line> lines = null;
     float scale = 1;
     float speed = 1;
     @FXML
@@ -53,17 +55,19 @@ public class Controller {
     @FXML
     private void slower(){
         if(speed<0.1) return;
-        speed -=0.1;
-        if(speed<0.1) speed = 0;
-        speedText.setText((int) (speed*10)+"");
+        speed /=2;
+        speedText.setText((speed*1)+"x");
+
+
         timer.cancel();
         go();
     }
 
     @FXML
     private void faster(){
-        speed +=0.1;
-        speedText.setText((int) (speed*10)+"");
+        speed *=2;
+        speedText.setText((speed*1)+"x");
+
         timer.cancel();
         go();
     }
@@ -87,29 +91,74 @@ public class Controller {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                time+=10;
-                timeText.setText(Integer.toString(time));
+                time+=40*speed;
+                if(time>24*60*60*1000-1) time -= 24*60*60*1000;
+
+                timeText.setText(getTimeString(time));
                 Platform.runLater(new Runnable() {
                     @Override public void run() {
+                        notifyLines(time);
                         map.getChildren().clear();
                         refreshMapObjects();
                         movable = new ArrayList<Shape>();
                         for(Vehicle v: vehicles){
-                            GuiVehicle gV = new GuiVehicle(v.getSimulatedPosition(time));
-                            for(Shape s: gV.getEl(scale)){
-                                movable.add(s);
-                                map.getChildren().add(s);
+                            if(v.isDeployed()){
+                                GuiVehicle gV = new GuiVehicle(v.getSimulatedPosition(time));
+                                for(Shape s: gV.getEl(scale)){
+                                    movable.add(s);
+                                    map.getChildren().add(s);
 
+                                }
                             }
+
                         }
                     }
                 });
             }
-        }, 0, (long) (100/speed));
+        }, 0, (long) (40));
     }
 
 
     public void setVehicles(List<Vehicle> vehicles){
         this.vehicles = vehicles;
+    }
+    public void setLines(List<Line> lines){
+        this.lines = lines;
+    }
+    private void notifyLines(int time){
+
+        for(Line line: lines){
+
+            line.checkDeploy(time);
+        }
+    }
+
+    private String getTimeString(int time){
+
+        int timeWHours = time % (60 * 60 * 1000);
+        int hours = (time - timeWHours) / (60 * 60 * 1000);
+        String hoursLead = "";
+        if(hours<10) hoursLead = "0";
+
+
+        int timeWMinutes = timeWHours % (60*1000);
+        int minutes = (timeWHours-timeWMinutes) / (60*1000);
+        String minutesLead = "";
+        if(minutes<10) minutesLead = "0";
+
+
+        int miliseconds = timeWMinutes % 1000;
+        int seconds = (timeWMinutes-miliseconds) / 1000;
+        String secondsLead = "";
+        if(seconds<10) secondsLead = "0";
+
+        String sMiliseconds = "";
+        if(miliseconds>0) sMiliseconds = "." + miliseconds;
+
+
+
+
+
+        return hoursLead + hours + ":" + minutesLead + minutes + ":" + secondsLead + seconds +  sMiliseconds;
     }
 }
