@@ -113,7 +113,11 @@ public class Vehicle {
                 waitTime = reaminingMillisecondsOnStop;
             } else {
                 waitTime = activeRoute.get(currentRoutePointer).getValue().getWaitTime();
+                System.out.println("Vehicle " + Id + " got into the stop. The waitTime of stop is waitTime");
             }
+
+            System.out.println("vehicle: " + Id + " waiting on stop. Remain time is: " + waitTime + ". call time [ "
+                    + time + " ]");
 
             if (waitTime > deltaTime) {
                 waitTime -= deltaTime;
@@ -123,7 +127,7 @@ public class Vehicle {
             } else {
                 deltaTime -= waitTime;
                 if (deltaTime == 0) {
-                    deltaTime = 1;
+                    deltaTime = 10;
                 }
             }
 
@@ -183,9 +187,11 @@ public class Vehicle {
 
     public boolean deploy(int time) {
         if (isDeployed) {
+            System.err.println("Vehicle: " + Id + " is already deployed! Cannot be deployed");
             return false;
         }
         if (activeLine == null) {
+            System.err.println("Vehicle: " + Id + " has no active line! Cannot be deployed");
             return false;
         }
         if (time < 0) {
@@ -199,6 +205,10 @@ public class Vehicle {
         this.coord = activeRoute.get(0).getKey();
         this.currentRoutePointer = 0;
         this.reaminingMillisecondsOnStop = 0;
+
+        System.out.println("deploying vehicle " + Id + " on the route. Time is: " + time);
+        System.out.println("And the route is: ");
+        this.activeLine.printRoute();
 
         return true;
     }

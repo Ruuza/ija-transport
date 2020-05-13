@@ -286,6 +286,21 @@ public class Line {
         return Collections.unmodifiableList(route);
     }
 
+    public void printRoute() {
+
+        System.out.println("########## PRINTING ROUTE: ############");
+        for (SimpleImmutableEntry<Coordinate, Stop> coordAndStop : route) {
+            if (coordAndStop.getValue() == null) {
+                System.out.println(
+                        "COORDINATE at X: " + coordAndStop.getKey().getX() + " ,Y:" + coordAndStop.getKey().getY());
+            } else {
+                System.out.println("STOP: " + coordAndStop.getValue().getId() + " at X: " + coordAndStop.getKey().getX()
+                        + " ,Y: " + coordAndStop.getKey().getY());
+
+            }
+        }
+    }
+
     /**
      * @return the deployTimes
      */
