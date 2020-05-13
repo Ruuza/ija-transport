@@ -61,7 +61,7 @@ public class Loader {
     }
     //no need to comment this, the code is pretty self explanatory. Refer to the other function or the JSON file in case of doubts
     public static List<Line> getLines(String filename, List<GuiStreet> gStreets, List<Vehicle> vehicles){
-
+        int stArrLen = 0;
         JSONObject obj = init(filename);
         List<Line> lines = new ArrayList<Line>();
         JSONArray jLines = obj.getJSONArray("lines");
@@ -71,7 +71,7 @@ public class Loader {
 
             List<Street> streets = new ArrayList<Street>();
             List<Stop> stops = new ArrayList<Stop>();
-            int stArrLen = 0;
+
             JSONArray jStreets = jLine.getJSONArray("streets");
             for(int p = 0; p<jStreets.length(); p++){
                 stArrLen++;
