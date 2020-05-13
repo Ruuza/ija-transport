@@ -128,7 +128,6 @@ public class Controller {
     private void notifyLines(int time){
 
         for(Line line: lines){
-
             line.checkDeploy(time);
         }
     }
