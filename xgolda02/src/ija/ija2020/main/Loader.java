@@ -96,10 +96,11 @@ public class Loader {
             int o = 0;
             for(Street street: streets){
                 stAr[o] = street;
+                System.out.println("adding " + street.getId());
                 o++;
 
             }
-
+            System.out.println("equals " + stAr[0].equals(stAr[stArrLen-1]));
             Line line = new Line(jLine.getString("id"), stAr);
             for(Stop stop: stops){
                 line.addStop(stop);

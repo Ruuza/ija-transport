@@ -2,14 +2,17 @@
   "lines": [
     {"id": "line1",
       "streets": [
-        {"id": "firstSt", "stops": [
-          {"id": "firstStop"},{"id": "SecondStop"}
+        {"id": "thiSt", "stops": [
+          {"id": "firstStop3"}
         ]},
         {"id": "secSt", "stops": [
-          {"id": "SecondStop2"}
+          {"id": "firstStop2"},{"id": "SecondStop2"}
         ]},
         {"id": "firstSt", "stops": [
           {"id": "firstStop"}
+        ]},
+        {"id": "thiSt", "stops": [
+          {"id": "firstStop3"}
         ]}
       ],
       "vehicles": [

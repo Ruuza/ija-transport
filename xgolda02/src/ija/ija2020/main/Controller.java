@@ -11,12 +11,12 @@ import ija.ija2020.maps.Vehicle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 
+import javafx.scene.control.TextField;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,10 @@ public class Controller {
     @FXML
     private Text speedText;
     @FXML
-
+    private Text status;
+    @FXML
+    private TextField jumpTime;
+    @FXML
     private void zoom(ScrollEvent e){
         e.consume();
         double z = e.getDeltaY();
@@ -75,6 +78,61 @@ public class Controller {
         timer.cancel();
         go();
     }
+
+    @FXML
+    private void jump(){
+        String[] sTime = jumpTime.getCharacters().toString().split(":");
+        if(sTime.length!=3){
+            status.setText("Invalid input!");
+            return;
+        }
+
+        int h;
+        int m;
+        int s;
+        try {
+            h = Integer.parseInt(sTime[0]);
+            m = Integer.parseInt(sTime[1]);
+            s = Integer.parseInt(sTime[2]);
+        }catch (NumberFormatException e) {
+            status.setText("Invalid input!");
+            return;
+        }
+
+        if(h<0||h>23||m<0||m>59||s<0||s>59){
+            status.setText("Invalid input!");
+            return;
+        }
+
+        //all the checks passed succesfully, time to do some simulating
+        status.setText("Simulating...");
+        timer.cancel();
+        map.getChildren().clear();
+
+        boolean loopThrough= false;
+        int target = h*60*60*1000 + m*60*1000 + s*1000;
+        if(time > target){
+            loopThrough = true;
+        }
+
+        while(time< target || loopThrough){
+            if(time>24*60*60*1000-1){
+                loopThrough = false;
+                time -= 24*60*60*1000;
+            }
+            notifyLines(time);
+            for(Vehicle v: vehicles){
+                if(v.isDeployed()){
+                    v.getSimulatedPosition(time);
+                }
+
+            }
+            time+=1000 ;
+        }
+        status.setText("Everything ok");
+        go();
+    }
+
 
     public void setMapObjects(List<GuiStreet> mapObjects){
         this.mapObjects = mapObjects;
