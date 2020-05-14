@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Text?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ija.ija2020.main.Controller">
-   <right>
+   <left>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
             <Text fx:id="timeText" layoutX="13.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="00:00:00" wrappingWidth="169.7294921875" />
@@ -21,17 +21,26 @@
             <Text layoutX="12.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Only jumps forward." />
             <Text layoutX="12.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Format: HH:MM:SS" />
             <Button layoutX="136.0" layoutY="140.0" mnemonicParsing="false" onAction="#jump" text="Jump" />
-            <Text fx:id="status" fill="#0000007e" layoutX="11.0" layoutY="387.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="Everything ok" wrappingWidth="177.7294921875">
+            <Text fx:id="status" fill="#0000007e" layoutX="11.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="Everything ok" wrappingWidth="177.7294921875" AnchorPane.bottomAnchor="11.0" AnchorPane.leftAnchor="11.0">
                <font>
                   <Font name="System Italic" size="13.0" />
                </font>
             </Text>
+            <Text fx:id="streetSel" layoutX="12.0" layoutY="213.0" strokeType="OUTSIDE" strokeWidth="0.0" text="No street selected" />
+            <Button layoutX="11.0" layoutY="224.0" mnemonicParsing="false" onAction="#strslow1" text="&gt;" />
+            <Button layoutX="40.0" layoutY="224.0" mnemonicParsing="false" onAction="#strslow2" text="&gt;&gt;" />
+            <Button layoutX="80.0" layoutY="224.0" mnemonicParsing="false" onAction="#strslow3" text="&gt;&gt;&gt;" />
+            <Button fx:id="y" layoutX="131.0" layoutY="224.0" mnemonicParsing="false" onAction="#strslow4" text="&gt;&gt;&gt;&gt;" />
+            <Button layoutX="40.0" layoutY="262.0" mnemonicParsing="false" onAction="#close" text="Close selected street" />
+            <Text layoutX="11.0" layoutY="312.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose another route by" />
+            <Text layoutX="12.0" layoutY="328.0" strokeType="OUTSIDE" strokeWidth="0.0" text="selecting a sequence of" />
+            <Text layoutX="12.0" layoutY="344.0" strokeType="OUTSIDE" strokeWidth="0.0" text="streets" />
          </children></AnchorPane>
-   </right>
+   </left>
    <center>
-      <ScrollPane pannable="true" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <content>
-            <AnchorPane fx:id="map" onScroll="#zoom" prefHeight="398.0" prefWidth="398.0" />
+            <AnchorPane fx:id="map" onMouseClicked="#handleMapClick" onScroll="#zoom" prefHeight="2000.0" prefWidth="2000.0" />
          </content>
       </ScrollPane>
    </center>

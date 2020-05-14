@@ -12,6 +12,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
@@ -35,6 +36,7 @@ public class Controller {
     private List<Line> lines = null;
     float scale = 1;
     float speed = 1;
+    private GuiStreet selStreet = null;
     @FXML
     private AnchorPane map;
     @FXML
@@ -43,6 +45,8 @@ public class Controller {
     private Text speedText;
     @FXML
     private Text status;
+    @FXML
+    private Text streetSel;
     @FXML
     private TextField jumpTime;
     @FXML
@@ -68,6 +72,8 @@ public class Controller {
         timer.cancel();
         go();
     }
+
+
 
     @FXML
     private void faster(){
@@ -131,6 +137,41 @@ public class Controller {
         }
         status.setText("Everything ok");
         go();
+    }
+
+
+    @FXML
+    private void handleMapClick(MouseEvent event) {
+        System.out.println(event.getSceneX());
+        System.out.println(event.getSceneY());
+        for(GuiStreet s: mapObjects){
+            if(s.wasIClickedOn(event.getSceneX(),event.getSceneY(), scale)){
+                streetSel.setText("Selected " + s.getId());
+                selStreet = s;
+                return;
+            }
+        }
+    }
+
+    @FXML
+    private void strslow1(){
+
+    }
+    @FXML
+    private void strslow2(){
+
+    }
+    @FXML
+    private void strslow3(){
+
+    }
+    @FXML
+    private void strslow4(){
+
+    }
+    @FXML
+    private void close(){
+
     }
 
 
