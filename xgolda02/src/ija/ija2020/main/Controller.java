@@ -142,8 +142,8 @@ public class Controller {
 
     @FXML
     private void handleMapClick(MouseEvent event) {
-        System.out.println(event.getSceneX());
-        System.out.println(event.getSceneY());
+        System.out.println(event.getSceneX()/scale - 200/scale);
+        System.out.println(event.getSceneY()/scale);
         for(GuiStreet s: mapObjects){
             if(s.wasIClickedOn(event.getSceneX(),event.getSceneY(), scale)){
                 if(selStreet!=null) selStreet.unselect();
