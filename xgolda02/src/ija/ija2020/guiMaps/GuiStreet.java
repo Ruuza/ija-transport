@@ -4,6 +4,7 @@ import ija.ija2020.main.MapObject;
 import ija.ija2020.maps.Coordinate;
 import ija.ija2020.maps.Stop;
 import ija.ija2020.maps.Street;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.scene.paint.Color;
@@ -19,7 +20,9 @@ public class GuiStreet extends Street implements MapObject {
     private static final int offsetX = 200;
     private static final int offsetY = 0;
     private static final int clickRange = 5;
-    Color color = new Color(0, 0, 0, 1.0);
+    private boolean selected = false;
+    private Color color = new Color(0, 0, 0, 1.0);
+    private Color selcolor = new Color(1,0,0,1.0);
     public GuiStreet(String Id, Coordinate... points) {
         super(Id, points);
     }
@@ -37,7 +40,12 @@ public class GuiStreet extends Street implements MapObject {
             if (last != null) {
                 Line line = new Line(last.getX() * scale, last.getY() * scale, c.getX() * scale, c.getY() * scale);
                 line.setStrokeWidth(2*scale);
-                line.setStroke(color);
+                if(selected){
+                    line.setStroke(selcolor);
+                }else{
+                    line.setStroke(color);
+                }
+
                 lines.add(line);
             }
             last = c;
@@ -48,6 +56,10 @@ public class GuiStreet extends Street implements MapObject {
             for (Shape shape : gS.getEl(scale)) {
                 lines.add(shape);
             }
+        }
+
+        for (Coordinate c: this.getCoordinates()){
+            lines.add(new Circle(c.getX() * scale, c.getY() * scale, 5*scale, new Color(0,1,0,1.0)));
         }
         return lines;
     }
@@ -69,6 +81,13 @@ public class GuiStreet extends Street implements MapObject {
             last = c;
         }
         return false;
+    }
+
+    public void select(){
+        selected = true;
+    }
+    public void unselect(){
+        selected = false;
     }
 
     private boolean lineClick(double x, double y, Coordinate start, Coordinate end){

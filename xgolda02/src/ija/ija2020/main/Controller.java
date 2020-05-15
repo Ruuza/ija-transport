@@ -146,7 +146,9 @@ public class Controller {
         System.out.println(event.getSceneY());
         for(GuiStreet s: mapObjects){
             if(s.wasIClickedOn(event.getSceneX(),event.getSceneY(), scale)){
+                if(selStreet!=null) selStreet.unselect();
                 streetSel.setText("Selected " + s.getId());
+                s.select();
                 selStreet = s;
                 return;
             }
