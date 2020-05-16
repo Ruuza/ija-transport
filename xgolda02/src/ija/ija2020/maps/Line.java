@@ -1,7 +1,6 @@
 package ija.ija2020.maps;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.AbstractMap.SimpleImmutableEntry;
@@ -149,6 +148,18 @@ public class Line {
 
         lastPoint = streetCross[1];
 
+    }
+
+    public void updateStreets(Street... streets){
+        Street[] oldStreets = inputStreets;
+        this.inputStreets = streets;
+        try {
+            generateRoute();
+        } catch (Exception e) {
+            this.inputStreets = oldStreets;
+            generateRoute();
+            throw new IllegalArgumentException("Entered streets are in wrong format");
+        }
     }
 
     public boolean addDeployTime(int time) {

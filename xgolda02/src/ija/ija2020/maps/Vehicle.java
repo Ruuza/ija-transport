@@ -139,7 +139,7 @@ public class Vehicle {
         int originalTimeWithoutRemain = time - remainTime;
 
         if (originalTimeWithoutRemain < lastUpdateTime) {
-            System.err.println("Unexpected vehicle time behaviour. Please report to administrator");
+            // System.err.println("Unexpected vehicle time behaviour. Please report to administrator");
             originalTimeWithoutRemain = lastUpdateTime;
         }
 
