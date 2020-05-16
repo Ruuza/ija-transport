@@ -157,19 +157,19 @@ public class Controller {
 
     @FXML
     private void strslow1(){
-
+        selStreet.setSpeedModifier((float) 0.2);
     }
     @FXML
     private void strslow2(){
-
+        selStreet.setSpeedModifier((float) 0.5);
     }
     @FXML
     private void strslow3(){
-
+        selStreet.setSpeedModifier((float) 0.75);
     }
     @FXML
     private void strslow4(){
-
+        selStreet.setSpeedModifier((float) 1);
     }
     @FXML
     private void close(){
