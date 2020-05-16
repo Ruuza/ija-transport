@@ -37,6 +37,9 @@ public class Vehicle {
     // Save route, so changes in Line won't affect this ride
     private List<SimpleImmutableEntry<Coordinate, Stop>> activeRoute = new ArrayList<>();
 
+    private float xRemain = 0f;
+    private float yRemain = 0f;
+
     public Vehicle(String id) {
         if (id == null) {
             throw new IllegalArgumentException("null parrameters not supported");
@@ -173,10 +176,19 @@ public class Vehicle {
         double deltaX = nextCoordinate.getX() - coord.getX();
         double deltaY = nextCoordinate.getY() - coord.getY();
 
-        this.coord = new Coordinate((int) Math.round(coord.getX()
-                + (coefficient * deltaX * activeLine.getWhichStreet(currentRoutePointer + 1).getSpeedModifier())),
-                (int) Math.round(coord.getY() + (coefficient * deltaY
-                        * activeLine.getWhichStreet(currentRoutePointer + 1).getSpeedModifier())));
+        double newX = coord.getX() + (coefficient * deltaX * activeLine.getWhichStreet(currentRoutePointer + 1).getSpeedModifier());
+        double newY = coord.getY() + (coefficient * deltaY * activeLine.getWhichStreet(currentRoutePointer + 1).getSpeedModifier());
+        
+        newX += xRemain;
+        newY += yRemain;
+
+        int newXwhole = (int) newX;
+        int newYwhole = (int) newY;
+
+        xRemain = (float) (newX - newXwhole);
+        yRemain = (float) (newY - newYwhole);
+
+        this.coord = new Coordinate(newXwhole, newYwhole);
 
         return 0;
 
@@ -206,6 +218,8 @@ public class Vehicle {
         this.coord = activeRoute.get(0).getKey();
         this.currentRoutePointer = 0;
         this.reaminingMillisecondsOnStop = 0;
+        this.xRemain = 0;
+        this.yRemain = 0;
 
         System.out.println("deploying vehicle " + Id + " on the route. Time is: " + time);
         System.out.println("And the route is: ");
