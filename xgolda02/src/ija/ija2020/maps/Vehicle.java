@@ -113,11 +113,7 @@ public class Vehicle {
                 waitTime = reaminingMillisecondsOnStop;
             } else {
                 waitTime = activeRoute.get(currentRoutePointer).getValue().getWaitTime();
-                System.out.println("Vehicle " + Id + " got into the stop. The waitTime of stop is waitTime");
             }
-
-            System.out.println("vehicle: " + Id + " waiting on stop. Remain time is: " + waitTime + ". call time [ "
-                    + time + " ]");
 
             if (waitTime > deltaTime) {
                 waitTime -= deltaTime;
@@ -163,6 +159,8 @@ public class Vehicle {
 
         int timeDistance = distanceToTime(distance);
 
+        timeDistance = (int) (timeDistance / activeLine.getWhichStreet(currentRoutePointer + 1).getSpeedModifier());
+
         // When the vehicle is already in next point
         if (deltaTime >= timeDistance) {
             this.coord = nextCoordinate;
@@ -175,8 +173,10 @@ public class Vehicle {
         double deltaX = nextCoordinate.getX() - coord.getX();
         double deltaY = nextCoordinate.getY() - coord.getY();
 
-        this.coord = new Coordinate((int) Math.round(coord.getX() + (coefficient * deltaX)),
-                (int) Math.round(coord.getY() + (coefficient * deltaY)));
+        this.coord = new Coordinate((int) Math.round(coord.getX()
+                + (coefficient * deltaX * activeLine.getWhichStreet(currentRoutePointer + 1).getSpeedModifier())),
+                (int) Math.round(coord.getY() + (coefficient * deltaY
+                        * activeLine.getWhichStreet(currentRoutePointer + 1).getSpeedModifier())));
 
         return 0;
 

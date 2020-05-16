@@ -1,6 +1,7 @@
 package ija.ija2020.maps;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.AbstractMap.SimpleImmutableEntry;
@@ -34,6 +35,10 @@ public class Line {
     // Last point used to start street with
     private int lastPoint;
 
+    // Determine which street does a point below to.
+    // Example: point[5] belwo to street whichStret[5]
+    private List<Street> whichStreet = new ArrayList<>();
+
     public Line(String id, Street... streets) {
         if (id == null)
             throw new IllegalArgumentException("null argument");
@@ -60,8 +65,10 @@ public class Line {
     private void generateRoute() {
 
         this.route = new ArrayList<>();
+        this.whichStreet = new ArrayList<>();
 
-        route.add(new SimpleImmutableEntry<Coordinate, Stop>(inputStreets[0].getCoordinates().get(0), null));
+        this.route.add(new SimpleImmutableEntry<Coordinate, Stop>(inputStreets[0].getCoordinates().get(0), null));
+        this.whichStreet.add(inputStreets[0]);
         this.lastPoint = 0;
 
         for (int i = 0; i < inputStreets.length; i++) {
@@ -81,11 +88,17 @@ public class Line {
             addStreet​(actualStreet, nextStreet);
         }
 
+        if (route.size() != whichStreet.size()) {
+            throw new InternalError("whichStreet size and route size are not equal");
+        }
+
         if (inputStreets[0].isPoint(getLastStreetPoint()) != -1) {
             if (getStartCoordinateOfRoute().equals(route.get(route.size() - 1).getKey())) {
                 return;
             } else {
-                route.add(new SimpleImmutableEntry<Coordinate, Stop>(getStartCoordinateOfRoute(), null));
+                this.route.add(new SimpleImmutableEntry<Coordinate, Stop>(getStartCoordinateOfRoute(), null));
+                this.whichStreet.add(inputStreets[0]);
+
             }
         } else {
             throw new IllegalArgumentException(
@@ -115,18 +128,22 @@ public class Line {
                 for (Stop stop : stopsOnActualStreet) {
                     if (stop.getAfterWhichPointOfStreet() == i) {
                         route.add(new SimpleImmutableEntry<Coordinate, Stop>(stop.getCoordinate(), stop));
+                        whichStreet.add(stop.getStreet());
                     }
                 }
                 route.add(new SimpleImmutableEntry<Coordinate, Stop>(actualStreet.getCoordinates().get(i), null));
+                whichStreet.add(actualStreet);
             }
         } else {
             for (int i = lastPoint + 1; i <= streetCross[0]; i++) {
                 for (Stop stop : stopsOnActualStreet) {
                     if (stop.getAfterWhichPointOfStreet() == i - 1) {
                         route.add(new SimpleImmutableEntry<Coordinate, Stop>(stop.getCoordinate(), stop));
+                        whichStreet.add(stop.getStreet());
                     }
                 }
                 route.add(new SimpleImmutableEntry<Coordinate, Stop>(actualStreet.getCoordinates().get(i), null));
+                whichStreet.add(actualStreet);
             }
         }
 
@@ -299,6 +316,12 @@ public class Line {
     public void printRoute() {
 
         System.out.println("########## PRINTING ROUTE: ############");
+        String printString = "";
+        for (Street street : inputStreets) {
+            printString += street.getId();
+            printString += ", ";
+        }
+        System.out.println(printString);
         for (SimpleImmutableEntry<Coordinate, Stop> coordAndStop : route) {
             if (coordAndStop.getValue() == null) {
                 System.out.println(
@@ -309,6 +332,16 @@ public class Line {
 
             }
         }
+    }
+
+    /**
+     * @return the whichStreet
+     */
+    public Street getWhichStreet(int i) {
+        if (i < 0 || i > whichStreet.size() - 1) {
+            throw new IllegalArgumentException("index is lower than zero ore greater than number of streets");
+        }
+        return whichStreet.get(i);
     }
 
     /**

@@ -23,31 +23,26 @@ public class Street {
     private List<Stop> Stops = new ArrayList<>();
 
     // avg Speed of vehicles on the Street in meters/s
-    private float avgSpeedInMpS;
+    private float speedModifier = 1;
 
     public Street(String Id, Coordinate... points) {
         this.Id = Id;
-        this.Stops = new ArrayList<>();
         for (Coordinate coordinate : points) {
             coordinates.add(coordinate);
         }
-        this.avgSpeedInMpS = 14;
     }
 
     public Street(String Id, List<Coordinate> c) {
         this.Id = Id;
-        this.Stops = new ArrayList<>();
         this.coordinates = c;
-        this.avgSpeedInMpS = 14;
     }
 
-    public Street(String Id, float avgSpeedInMpS, Coordinate... points) {
+    public Street(String Id, float speedModifier, Coordinate... points) {
         this.Id = Id;
-        this.Stops = new ArrayList<>();
         for (Coordinate coordinate : points) {
             coordinates.add(coordinate);
         }
-        this.avgSpeedInMpS = avgSpeedInMpS;
+        this.speedModifier = speedModifier;
     }
 
     /**
@@ -164,13 +159,6 @@ public class Street {
     }
 
     /**
-     * @return the avgSpeedInMpS
-     */
-    public float getAvgSpeedInMpS() {
-        return avgSpeedInMpS;
-    }
-
-    /**
      * Return start coordinate of street
      * 
      * @return first coordinate of the street (Start)
@@ -186,6 +174,23 @@ public class Street {
      */
     public Coordinate end() {
         return this.coordinates.get(coordinates.size() - 1);
+    }
+
+    /**
+     * @return the speedModifier
+     */
+    public float getSpeedModifier() {
+        return speedModifier;
+    }
+
+    /**
+     * @param speedModifier the speedModifier to set in range of 0.2 to 1 included;
+     */
+    public void setSpeedModifier(float speedModifier) {
+        if (speedModifier > 1 || speedModifier < 0.2) {
+            throw new IllegalArgumentException("Speed modifier has to be in range 0.2 to 1 included");
+        }
+        this.speedModifier = speedModifier;
     }
 
     /**
