@@ -107,6 +107,8 @@ public class Line {
 
     private void addStreet​(Street actualStreet, Street nextStreet) {
 
+        boolean debug = false;
+
         int[] streetCross = actualStreet.follows(nextStreet);
 
         if (streetCross.length != 2) {
@@ -119,6 +121,15 @@ public class Line {
             if (stop.getStreet().equals(actualStreet)) {
                 stopsOnActualStreet.add(stop);
             }
+        }
+
+        // System.out.println("Name: " + actualStreet.getId());
+
+        if(actualStreet.getId() == "sth3"){
+            System.out.println("Current Street: sth3 , cross: " + streetCross[0]);
+            System.out.println("Next Street: " + nextStreet.getId() + " , corss: " + streetCross[1]);
+            System.out.println("Last point: " + lastPoint);
+            debug = true;
         }
 
         // Fill the coordinates for actualStreet

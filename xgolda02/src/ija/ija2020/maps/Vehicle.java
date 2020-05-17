@@ -222,8 +222,6 @@ public class Vehicle {
         this.yRemain = 0;
 
         System.out.println("deploying vehicle " + Id + " on the route. Time is: " + time);
-        System.out.println("And the route is: ");
-        this.activeLine.printRoute();
 
         return true;
     }
