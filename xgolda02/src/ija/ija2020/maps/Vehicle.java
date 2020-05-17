@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.AbstractMap.SimpleImmutableEntry;
 
+/**
+ * Defines the Vehicle. Vehicle belongs under line and when deployed, it goes from one line route point to another. Position is updated on call of getSimulatedPostiton,
+ * @author Petr Ruzansky
+ */
 public class Vehicle {
 
     // How many milliseconds is in one day
@@ -37,9 +41,14 @@ public class Vehicle {
     // Save route, so changes in Line won't affect this ride
     private List<SimpleImmutableEntry<Coordinate, Stop>> activeRoute = new ArrayList<>();
 
+    // the the rest after rounding.
     private float xRemain = 0f;
     private float yRemain = 0f;
 
+    /**
+     * 
+     * @param id unique name of vehicle
+     */
     public Vehicle(String id) {
         if (id == null) {
             throw new IllegalArgumentException("null parrameters not supported");
@@ -54,6 +63,11 @@ public class Vehicle {
         return isDeployed;
     }
 
+    /**
+     * Return the position of the Vehicle
+     * @param time in format: how many milliseconds from 0:00.
+     * @return Coordinate of actual position
+     */
     public Coordinate getSimulatedPosition(int time) {
 
         if (!isDeployed) {
@@ -75,6 +89,11 @@ public class Vehicle {
         return coord;
     }
 
+    /**
+     * update the postition
+     * @param time time in simulation in format as: how many milliseconds from 0:00.
+     * @return true when success.
+     */
     private boolean updateSimulatedPosition(int time) {
 
         if (!isDeployed) {
@@ -155,6 +174,11 @@ public class Vehicle {
 
     }
 
+    /**
+     * Move vehicle in direction to next point
+     * @param deltaTime time in milliseconds to update the distabce
+     * @return the rest of deltatime if vehicle get to the point befor completing all of the time.
+     */
     private int toNextPoint(int deltaTime) {
         Coordinate nextCoordinate = activeRoute.get(currentRoutePointer + 1).getKey();
 
@@ -194,10 +218,20 @@ public class Vehicle {
 
     }
 
+    /**
+     * How many milliseconds would take the vehicle to move by this distance
+     * @param distance distance in meters
+     * @return milliseconds, that would take the vehicle to move by this distance
+     */
     private int distanceToTime(double distance) {
         return (int) ((distance * 1000) / speed);
     }
 
+    /**
+     * deploy the vehicle
+     * @param time time of the time in milliseconds from the 0:00.
+     * @return true if succesfully deployed
+     */
     public boolean deploy(int time) {
         if (isDeployed) {
             System.err.println("Vehicle: " + Id + " is already deployed! Cannot be deployed");

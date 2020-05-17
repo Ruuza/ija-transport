@@ -25,6 +25,11 @@ public class Street {
     // avg Speed of vehicles on the Street in meters/s
     private float speedModifier = 1;
 
+    /**
+     * 
+     * @param Id Unique name of street
+     * @param points points that define the shape and position of the street
+     */
     public Street(String Id, Coordinate... points) {
         this.Id = Id;
         for (Coordinate coordinate : points) {
@@ -32,11 +37,22 @@ public class Street {
         }
     }
 
+    /**
+     * 
+     * @param Id Unique name of street
+     * @param points list of points that define the shape and position of the street
+     */
     public Street(String Id, List<Coordinate> c) {
         this.Id = Id;
         this.coordinates = c;
     }
 
+    /**
+     * 
+     * @param Id Unique name of street
+     * @param speedModifier modifier of the speed on the route from 0.2 to 1.
+     * @param points list of points that define the shape and position of the street
+     */
     public Street(String Id, float speedModifier, Coordinate... points) {
         this.Id = Id;
         for (Coordinate coordinate : points) {

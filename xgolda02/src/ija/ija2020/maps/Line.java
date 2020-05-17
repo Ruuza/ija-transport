@@ -6,8 +6,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.AbstractMap.SimpleImmutableEntry;
 
+/**
+ * Define the transport line. Creates point to point path through both, streets and stops, so Vehicles can just move from one point to another.
+ * Also cares of deploying Vehicles at right deploy time.
+ * @author Petr Ruzansky
+ */
 public class Line {
 
+    // how many milliseconds are in day
     public static final int msInDay = 86400000;
 
     // Id/Name of the Line
@@ -39,13 +45,16 @@ public class Line {
     // Example: point[5] belwo to street whichStret[5]
     private List<Street> whichStreet = new ArrayList<>();
 
+
+    /**
+     * 
+     * @param id unique name of street
+     * @param streets streets in order to create path with
+     */
     public Line(String id, Street... streets) {
         if (id == null)
             throw new IllegalArgumentException("null argument");
-        // if (startPosition == null)
-        // throw new IllegalArgumentException("null argument");
         this.ID = id;
-        // this.startPosition = startPosition;
 
         if (streets.length < 2) {
             throw new IllegalArgumentException("At least two streets expected as argument");
@@ -62,11 +71,15 @@ public class Line {
         generateRoute();
     }
 
+    /**
+     * Generate point to point route (path) with both streets and stops
+     */
     private void generateRoute() {
 
         this.route = new ArrayList<>();
         this.whichStreet = new ArrayList<>();
 
+        // add first route
         this.route.add(new SimpleImmutableEntry<Coordinate, Stop>(inputStreets[0].getCoordinates().get(0), null));
         this.whichStreet.add(inputStreets[0]);
         this.lastPoint = 0;
@@ -92,6 +105,7 @@ public class Line {
             throw new InternalError("whichStreet size and route size are not equal");
         }
 
+        // We are back on street now, we have to check if we are on right point. If not, get there.
         if (inputStreets[0].isPoint(getLastStreetPoint()) != -1) {
             if (getStartCoordinateOfRoute().equals(route.get(route.size() - 1).getKey())) {
                 return;
@@ -106,8 +120,14 @@ public class Line {
         }
     }
 
+    /**
+     * Add required point of streets and stops to the line so vehicle can just follow them point to point.
+     * @param actualStreet actual street that has to be generated
+     * @param nextStreet next street
+     */
     private void addStreet​(Street actualStreet, Street nextStreet) {
 
+        //we get crossing of two streets to know from which to which point we have to generate path
         int[] streetCross = actualStreet.follows(nextStreet);
 
         if (streetCross.length != 2) {
@@ -151,6 +171,10 @@ public class Line {
 
     }
 
+    /**
+     * set Streets
+     * @param streets streets to replace default streets from constructor
+     */
     public void updateStreets(Street... streets){
         Street[] oldStreets = inputStreets;
         this.inputStreets = streets;
@@ -163,6 +187,11 @@ public class Line {
         }
     }
 
+    /**
+     * Set new part of street insted of old one. The first and last element has to be already set in line.
+     * Find the first result and replace everything between first and last element with the Steeets between first and last new elements.
+     * @param streets List of the new part of the street.
+     */
     public void updatePartOfStreets(List<Street> streets){
         if(streets == null){
             throw new IllegalArgumentException("Streets are null");
@@ -225,6 +254,11 @@ public class Line {
 
     }
 
+    /**
+     * Add time (in format: how many seconds in this day from 0:00) when the Vehicles should be deployed.
+     * @param time in format: how many seconds in this day from 0:00. Determine when the Vehicles should be deployed.
+     * @return true when success.
+     */
     public boolean addDeployTime(int time) {
 
         if (time >= msInDay) {
@@ -244,13 +278,24 @@ public class Line {
         return true;
     }
 
+    /**
+     * Remove time from deploy times.
+     * @param time time to be removed. in format: how many seconds in this day from 0:00.
+     * @return true if time was in deploy times.
+     */
     public boolean removeTime(int time) {
         if (deployTimes.contains(time)) {
             deployTimes.remove(time);
+            return true;
         }
         return false;
     }
 
+    /**
+     * Add stop to stop at, if Line would go through that stop.
+     * @param stop stop to stop at, if Line would go through that stop.
+     * @return true when succes (for example stop not already in Line).
+     */
     public boolean addStop(Stop stop) {
         if (stop == null) {
             throw new IllegalArgumentException("stop cannot be null");
@@ -266,6 +311,10 @@ public class Line {
 
     }
 
+    /**
+     * return Vehicles, that can be deployed (the are not deployed yet).
+     * @return undeployed vehicles
+     */
     public List<Vehicle> getAvailableVehicles() {
         List<Vehicle> availableVehicles = new ArrayList<>();
         for (Vehicle vehicle : this.vehicles) {
@@ -276,6 +325,10 @@ public class Line {
         return availableVehicles;
     }
 
+    /**
+     * return deployed vehicles.
+     * @return deployed vehicles
+     */
     public List<Vehicle> getunAvailableVehicles() {
         List<Vehicle> unavailableVehicles = new ArrayList<>();
         for (Vehicle vehicle : this.vehicles) {
@@ -286,6 +339,10 @@ public class Line {
         return unavailableVehicles;
     }
 
+    /**
+     * update position and status of all avaible vehicles.
+     * @param time time in format: how many seconds in this day from 0:00
+     */
     public void updateVehicles(int time) {
         for (Vehicle vehicle : this.vehicles) {
             if (vehicle.isDeployed()) {
@@ -294,6 +351,11 @@ public class Line {
         }
     }
 
+    /**
+     * Check if time should deploy a vehicle between last and given time. If so, it would automaticly try to deploy one of avaible vehicles.
+     * @param time actual time in ms from 0:00
+     * @return true if vehicle was succesfully deployed.
+     */
     public boolean checkDeploy(int time) {
         if (time >= msInDay) {
             System.err.println("time has to be lower than miliseconds in day");
@@ -340,10 +402,21 @@ public class Line {
 
     }
 
+    /**
+     * Deploy a vehicle
+     * @param vehicle vehicle to deploy
+     * @param time in format: how many seconds in this day from 0:00
+     * @return true when successfully deployed
+     */
     private boolean deploy(Vehicle vehicle, int time) {
         return vehicle.deploy(time);
     }
 
+    /**
+     * remove the stop from Stops
+     * @param stop the stop to be removed
+     * @return true if the stop was in Stops
+     */
     public boolean removeStop(Stop stop) {
         if (stops.contains(stop)) {
             stops.remove(stop);
@@ -352,6 +425,10 @@ public class Line {
         return false;
     }
 
+    /**
+     * return last point of street in route.
+     * @return last point of street in route.
+     */
     private Coordinate getLastStreetPoint() {
         for (int i = route.size() - 1; i >= 0; i--) {
             if (route.get(i).getValue() == null) {
@@ -361,6 +438,11 @@ public class Line {
         throw new IllegalArgumentException("no street point's in route");
     }
 
+    /**
+     * add vehicle
+     * @param vehicle vehicle to add
+     * @return true if success
+     */
     public boolean addVehicle(Vehicle vehicle) {
         if (this.vehicles.contains(vehicle)) {
             return false;
@@ -370,6 +452,11 @@ public class Line {
         return false;
     }
 
+    /**
+     * remove vehicle
+     * @param vehicle vehicle to remove
+     * @return true if success
+     */
     public boolean removeVehicle(Vehicle vehicle) {
         if (!this.vehicles.contains(vehicle)) {
             return false;
@@ -379,14 +466,25 @@ public class Line {
         return false;
     }
 
+    /**
+     * Get start coordinate of the route
+     * @return start coordinate of the route
+     */
     public Coordinate getStartCoordinateOfRoute() {
         return route.get(0).getKey();
     }
 
+    /**
+     * return the route
+     * @return the route
+     */
     public List<SimpleImmutableEntry<Coordinate, Stop>> getRoute() {
         return Collections.unmodifiableList(route);
     }
 
+    /**
+     * print current route on stdout
+     */
     public void printRoute() {
 
         System.out.println("########## PRINTING ROUTE: ############");
