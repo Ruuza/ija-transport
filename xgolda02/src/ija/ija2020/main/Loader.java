@@ -1,5 +1,9 @@
 package ija.ija2020.main;
-
+/**
+ * Functions to load the map layout from a file
+ *
+ * @author Vojtěch Golda
+ */
 import ija.ija2020.guiMaps.GuiStreet;
 import ija.ija2020.maps.*;
 import org.json.*;

@@ -1,5 +1,9 @@
 package ija.ija2020.guiMaps;
-
+/**
+ * Expansion to the Stop class that implements the MapObject interface
+ *
+ * @author Vojtěch Golda
+ */
 import ija.ija2020.main.MapObject;
 import ija.ija2020.maps.Coordinate;
 import ija.ija2020.maps.Stop;
