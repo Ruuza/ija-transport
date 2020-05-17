@@ -2,6 +2,8 @@ package ija.ija2020.maps;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.AbstractMap.SimpleImmutableEntry;
 
@@ -616,4 +618,103 @@ public class UnitTests {
         Assertions.assertEquals(route.get(9).getKey(), c1);
 
     }
+
+    @Test
+    public void testLineUpdateStreets() {
+        Coordinate c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11;
+        Stop stop1, stop2, stop3;
+
+        c1 = new Coordinate(124, 360);
+        c2 = new Coordinate(115, 300);
+        c3 = new Coordinate(107, 203);
+        c4 = new Coordinate(320, 150);
+        c5 = new Coordinate(403, 122);
+        c6 = new Coordinate(124, 57);
+        c7 = new Coordinate(528, 365);
+        c8 = new Coordinate(625, 124);
+
+        Street s0 = new Street("street0", c1, c3, c2);
+        Street s1 = new Street("street1", c3, c4, c5);
+        Street s2 = new Street("street2", c5, c6);
+        Street s3 = new Street("street3", c5, c7);
+        Street s4 = new Street("street4", c8, c7);
+        Street s5 = new Street("street5", c4, c8);
+        Street s6 = new Street("street6", c1, c4);
+
+        c9 = new Coordinate(201, 278);
+        c10 = new Coordinate(111, 252);
+        c11 = new Coordinate(580, 236);
+        stop1 = new Stop("Stop1", c9);
+        stop2 = new Stop("Stop2", c10);
+        stop3 = new Stop("Stop3", c11);
+        s6.addStop(stop1);
+        s0.addStop(stop2);
+        s4.addStop(stop3);
+
+        List<Street> streets = new ArrayList<>();
+        Street[] inputStreets = new Street[] {s0, s1, s3, s4, s5, s6, s0};
+
+        streets.add(s1);
+        streets.add(s2);
+        streets.add(s3);
+
+        if(streets == null){
+            throw new IllegalArgumentException("Streets are null");
+        }
+        Street[] oldStreets = inputStreets;
+        List<Street> newStreets = new ArrayList<>();
+
+        boolean wasFirstStreet = false;
+        boolean wasLastStreet = false;
+
+        int indexStart = -1;
+        int indexEnd = -1;
+
+        indexStart = Arrays.asList(inputStreets).indexOf(streets.get(0));
+        indexEnd = Arrays.asList(inputStreets).indexOf(streets.get(streets.size()-1));
+
+        if(indexStart == -1 || indexEnd == -1){
+            throw new IllegalArgumentException("First and last element are not in streets");
+        }
+
+        if(indexStart >= indexEnd){
+            throw new IllegalArgumentException("First element is after the last element");
+        }
+
+        int streetsCounter = 0;
+        for(Street street: inputStreets){
+            if(wasFirstStreet){
+                if(wasLastStreet){
+                    newStreets.add(street);
+                }else{
+                    if(streetsCounter == indexEnd){
+                        wasLastStreet = true;
+                    }
+                }
+            }else{
+                if(street.equals(streets.get(0))){
+                    wasFirstStreet = true;
+                    for (Street s: streets){
+                        newStreets.add(s);
+                    }
+                }else{
+                    newStreets.add(street);
+                }
+            } 
+            streetsCounter++;
+        }
+
+        if(!wasFirstStreet || !wasLastStreet){
+            throw new IllegalArgumentException("First element is after the last element");
+        }
+        
+        try {
+            inputStreets = newStreets.toArray(new Street[0]);
+        } catch (Exception e) {
+            
+            inputStreets = oldStreets;
+            throw new IllegalArgumentException("won't be able to generate route");
+        }
+
+}
 }

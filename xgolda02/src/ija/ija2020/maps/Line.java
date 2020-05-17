@@ -1,6 +1,7 @@
 package ija.ija2020.maps;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.AbstractMap.SimpleImmutableEntry;
@@ -160,6 +161,68 @@ public class Line {
             generateRoute();
             throw new IllegalArgumentException("Entered streets are in wrong format");
         }
+    }
+
+    public void updatePartOfStreets(List<Street> streets){
+        if(streets == null){
+            throw new IllegalArgumentException("Streets are null");
+        }
+        Street[] oldStreets = inputStreets;
+        List<Street> newStreets = new ArrayList<>();
+
+        boolean wasFirstStreet = false;
+        boolean wasLastStreet = false;
+
+        int indexStart = -1;
+        int indexEnd = -1;
+
+        indexStart = Arrays.asList(inputStreets).indexOf(streets.get(0));
+        indexEnd = Arrays.asList(inputStreets).indexOf(streets.get(streets.size()-1));
+
+        if(indexStart == -1 || indexEnd == -1){
+            throw new IllegalArgumentException("First and last element are not in streets");
+        }
+
+        if(indexStart >= indexEnd){
+            throw new IllegalArgumentException("First element is after the last element");
+        }
+
+        int streetsCounter = 0;
+        for(Street street: inputStreets){
+            if(wasFirstStreet){
+                if(wasLastStreet){
+                    newStreets.add(street);
+                }else{
+                    if(streetsCounter == indexEnd){
+                        wasLastStreet = true;
+                    }
+                }
+            }else{
+                if(street.equals(streets.get(0))){
+                    wasFirstStreet = true;
+                    for (Street s: streets){
+                        newStreets.add(s);
+                    }
+                }else{
+                    newStreets.add(street);
+                }
+            } 
+            streetsCounter++;
+        }
+
+        if(!wasFirstStreet || !wasLastStreet){
+            throw new IllegalArgumentException("First element is after the last element");
+        }
+        
+        try {
+            inputStreets = newStreets.toArray(new Street[0]);
+            generateRoute();
+        } catch (Exception e) {
+            
+            inputStreets = oldStreets;
+            throw new IllegalArgumentException("won't be able to generate route");
+        }
+
     }
 
     public boolean addDeployTime(int time) {
