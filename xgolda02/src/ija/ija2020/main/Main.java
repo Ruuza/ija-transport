@@ -30,6 +30,9 @@ public class Main extends Application {
         }
         List<Vehicle> vehicles = new ArrayList<Vehicle>();
         List<Line> lines = getLines("lines2.json", streetList, vehicles);
+        for(Line l: lines){
+            System.out.println(l.getID());
+        }
        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/layout2.fxml"));
         BorderPane root = null;
         try {

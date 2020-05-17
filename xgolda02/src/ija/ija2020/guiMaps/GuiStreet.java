@@ -1,5 +1,9 @@
 package ija.ija2020.guiMaps;
-
+/**
+ * Expansion to the Street class that implements the MapObject interface. Furthermore, adds an ability to detect whether the street was clicked on.
+ *
+ * @author Vojtěch Golda
+ */
 import ija.ija2020.main.MapObject;
 import ija.ija2020.maps.Coordinate;
 import ija.ija2020.maps.Stop;

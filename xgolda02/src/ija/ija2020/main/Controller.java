@@ -1,12 +1,14 @@
 package ija.ija2020.main;
 /**
- * Contains all the gui event handlers
+ * Controls the gui
  *
  * @author Vojtěch Golda
  */
 import ija.ija2020.guiMaps.GuiStreet;
 import ija.ija2020.guiMaps.GuiVehicle;
+import ija.ija2020.maps.Coordinate;
 import ija.ija2020.maps.Line;
+import ija.ija2020.maps.Street;
 import ija.ija2020.maps.Vehicle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -19,6 +21,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -29,8 +32,10 @@ public class Controller {
     private final int framerate = 20;
     private Timer timer;
     private List<GuiStreet> mapObjects;
+    private List<GuiStreet> closeStreets;
     private int time = 0;
-    private int lowerFrameTime =0;
+    private int lowerFrameTime = 0;
+    private boolean closeMode = false;
     private List<Vehicle> vehicles = null;
     private List<GuiVehicle> movable = new ArrayList<GuiVehicle>();
     private List<Line> lines = null;
@@ -146,10 +151,35 @@ public class Controller {
         System.out.println(event.getSceneY()/scale);
         for(GuiStreet s: mapObjects){
             if(s.wasIClickedOn(event.getSceneX(),event.getSceneY(), scale)){
-                if(selStreet!=null) selStreet.unselect();
-                streetSel.setText("Selected " + s.getId());
-                s.select();
-                selStreet = s;
+                if(!closeMode){
+                    if(selStreet!=null) selStreet.unselect();
+                    streetSel.setText("Selected " + s.getId());
+                    s.select();
+                    selStreet = s;
+                }else{
+                    s.select();
+                    closeStreets.add(s);
+                    if(testValidClose(closeStreets)){
+                        System.out.println("Validated");
+                        List<Street> compList = new ArrayList<Street>();
+                        for(GuiStreet g: closeStreets){
+                            g.unselect();
+                            compList.add(g);
+                        }
+
+
+                        for(Line l: lines){
+                            try{
+                                l.updatePartOfStreets(compList);
+                            }catch(Exception e){
+                                
+                            }
+
+                        }
+                        closeMode = false;
+                    }
+                }
+
                 return;
             }
         }
@@ -173,7 +203,10 @@ public class Controller {
     }
     @FXML
     private void close(){
-
+        if(!closeMode) {
+            closeMode = true;
+            closeStreets = new ArrayList<GuiStreet>();
+        }
     }
 
 
@@ -284,5 +317,79 @@ public class Controller {
         return hoursLead + hours + ":" + minutesLead + minutes + ":" + secondsLead + seconds +  sMiliseconds;
     }
 
+    private Street[] replace(Street[] streets, List<GuiStreet> newS, GuiStreet target){
+        List <Street> result = new ArrayList<Street>();
+        int len =0;
+        boolean reverse = false;
+        //determine direction
+        for(Coordinate c: newS.get(0).getCoordinates()) {
+            if (target.getCoordinates().get(0).equals(c)) {
+                reverse = true;
+                System.out.println("reverse!");
+            }
+        }
+
+
+        for(Street street: streets){
+            if(street!=target){
+                result.add(street);
+                len++;
+            }else{
+                for(GuiStreet s: newS){
+                    result.add(s);
+                    len++;
+                }
+            }
+        }
+        Street[] array = new Street[len];
+        int i = 0;
+        for(Street g: result){
+            array[i] = g;
+            i++;
+        }
+        return array;
+    }
+
+    private boolean testValidClose(List<GuiStreet> close){
+        int found = 0;
+        List<Coordinate> sC = selStreet.getCoordinates();
+        Coordinate sFirst = sC.get(0);
+        Coordinate sLast = getLast(sC);
+        List<Coordinate> cFirst = close.get(0).getCoordinates();
+        List<Coordinate> cLast = null;
+        //Ugly, inefficient but it works and its short
+        for(GuiStreet g: close){
+           cLast =  g.getCoordinates();
+        }
+
+        for(Coordinate c: cFirst){
+            if(sFirst.equals(c)){
+                found = -1;
+            }else if( sLast.equals(c)){
+                found = 1;
+            }
+        }
+        if(found == 0){
+            return false;
+        }
+
+        //if the last street in the list intersects the last point of the closed street, the list is valid
+        for(Coordinate c: cLast){
+            if((found == -1 && sLast.equals(c))   ||   (sFirst.equals(c) && found==1)){
+                return true;
+            }
+        }
+
+
+        return false;
+    }
+
+    private Coordinate getLast(List<Coordinate> coords){
+        Coordinate last = null;
+        for(Coordinate c: coords){
+            last = c;
+        }
+        return last;
+    }
 
 }

@@ -1,4 +1,9 @@
 package ija.ija2020.main;
+/**
+ * Interface to unify all the drawable objects
+ *
+ * @author Vojtěch Golda
+ */
 
 import javafx.scene.shape.Shape;
 
